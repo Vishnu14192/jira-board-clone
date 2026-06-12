@@ -40,6 +40,15 @@ async def create_task(
     payload: TaskCreate,
     db: AsyncSession = Depends(get_db),
 ):
+    if payload.assignee_id == payload.assigner_id:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Assignee and assigner "
+                "cannot be the same user"
+            ),
+        )
+
     assignee = await db.get(
         User,
         payload.assignee_id,
@@ -157,6 +166,18 @@ async def update_task(
     updates = payload.model_dump(
         exclude_unset=True,
     )
+
+    if (
+        "assignee_id" in updates
+        and updates["assignee_id"] == task.assigner_id
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Assignee and assigner "
+                "cannot be the same user"
+            ),
+        )
 
     for key, value in updates.items():
         setattr(task, key, value)

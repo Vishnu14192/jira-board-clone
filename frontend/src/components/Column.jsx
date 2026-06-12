@@ -1,7 +1,12 @@
 import TaskCard from "./TaskCard";
 import { useDroppable } from "@dnd-kit/core";
 
-function Column({ title, tasks }) {
+function Column({
+  title,
+  tasks,
+  users,
+  onAssigneeChange,
+}) {
   const { setNodeRef } = useDroppable({
     id: title,
   });
@@ -31,6 +36,10 @@ function Column({ title, tasks }) {
             <TaskCard
               key={task.id}
               task={task}
+              users={users}
+              onAssigneeChange={
+                onAssigneeChange
+              }
             />
           ))
         )}

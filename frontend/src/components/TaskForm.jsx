@@ -46,6 +46,13 @@ function TaskForm({ onTaskCreated }) {
       return;
     }
 
+    if (assigneeId === assignerId) {
+      setError(
+        "Assignee and assigner cannot be the same person"
+      );
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -121,43 +128,55 @@ function TaskForm({ onTaskCreated }) {
         <select
           className="border p-2 rounded"
           value={assigneeId}
-          onChange={(e) =>
-            setAssigneeId(e.target.value)
-          }
+          onChange={(e) => {
+            setAssigneeId(e.target.value);
+            setError("");
+          }}
         >
           <option value="">
             Select Assignee
           </option>
 
-          {users.map((user) => (
+          {users
+            .filter(
+              (user) =>
+                String(user.id) !== assignerId
+            )
+            .map((user) => (
             <option
               key={user.id}
               value={user.id}
             >
               {user.name}
             </option>
-          ))}
+            ))}
         </select>
 
         <select
           className="border p-2 rounded"
           value={assignerId}
-          onChange={(e) =>
-            setAssignerId(e.target.value)
-          }
+          onChange={(e) => {
+            setAssignerId(e.target.value);
+            setError("");
+          }}
         >
           <option value="">
             Select Assigner
           </option>
 
-          {users.map((user) => (
+          {users
+            .filter(
+              (user) =>
+                String(user.id) !== assigneeId
+            )
+            .map((user) => (
             <option
               key={user.id}
               value={user.id}
             >
               {user.name}
             </option>
-          ))}
+            ))}
         </select>
 
       </div>
